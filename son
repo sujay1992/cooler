@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/home/pi/sdk/assistant-sdk-python/google-assistant-sdk/googlesamples/assistant/grpc/textinput.py --device-id test --device-model-id test --query "turn on smart plug"
