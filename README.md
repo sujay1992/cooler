@@ -10,9 +10,10 @@ https://github.com/googlesamples/assistant-sdk-python
 4. Raspberry Pi (also using as temperature sensor)
 5. DS18B20 Temperature Sensor Module (Currently not using)
 
-Change Log:
-**2021-04-27**
 
+**Change Log:**
+
+**2021-04-27**
 *README.md: Added description about the project
 
 *textinput.py: Added email notification when credential expires
@@ -28,3 +29,6 @@ Addition of changing temperature via web app.
 *cooler.py:
 Added as new Flask web app
 Takes temperature from web browser and saves to file.
+
+**2021-04-19**
+Initial Release
