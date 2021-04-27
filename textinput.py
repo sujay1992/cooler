@@ -140,6 +140,7 @@ class SampleTextAssistant(object):
                      'if not specifed, it is read from --device-config')))
 @click.option('--query',
               metavar='<query>',
+              required=True,
               help=(('Query text, '
                      'sends text query as voice input')))
 @click.option('--device-id',
@@ -177,6 +178,7 @@ def main(api_endpoint, credentials,
         logging.error('Error loading credentials: %s', e)
         logging.error('Run google-oauthlib-tool to initialize '
                       'new OAuth 2.0 credentials.')
+        os.system('echo "Please renew the credential" | mail -s "Credential Expired" pi@raspberrypi')
         return
 
     # Create an authorized gRPC channel.

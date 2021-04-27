@@ -2,18 +2,40 @@
 #include<stdio.h>
 #include<time.h>
 
+float getmax()
+{
+	FILE *fp=fopen("maxtemp.txt","r");
+	float temp;
+	fscanf(fp,"%f",&temp);
+	fclose(fp);
+	/*if(temp<20 || temp>50)
+		return 42.5;*/
+	return temp;
+}
+
+float getmin()
+{
+	FILE *fp=fopen("mintemp.txt","r");
+	float temp;
+	fscanf(fp,"%f",&temp);
+	fclose(fp);
+	/*if(temp<20 || temp>50)
+		return 42.5;*/
+	return temp;
+}
+
 int main(int argc, char* argv[])
 {
 	FILE *fp;
 	int flag=0;
-	float mintemp=42.2,maxtemp=44.2;
 	do{
+	float mintemp=getmin(),maxtemp=getmax();
 	system("sleep 5");
 	time_t now;
 	time(&now);
 	struct tm *local=localtime(&now);
 	int hr=local->tm_hour;
-	if(hr<1)
+	/*if(hr<1)
 	{
 		printf("Time < 0100\n");
 		fp=fopen("output.txt","a");
@@ -23,7 +45,7 @@ int main(int argc, char* argv[])
 		system("sleep 300");
 		return 1;
 	}
-	else if(hr>=7)
+	else*/ if(hr>=7)
 	{
 		if(hr<8)
 		{
@@ -54,7 +76,7 @@ int main(int argc, char* argv[])
 	fclose(fp);
 	printf("%2.1f %d ",temp,flag);
 	system("date");
-	if(temp<41.8)
+	if(temp<mintemp)
 	{
 		printf("Too Cool!\n");
 		if(flag>=0 || flag<=-20)
@@ -65,7 +87,7 @@ int main(int argc, char* argv[])
 		system("sleep 60");
 		flag--;
 	}
-	else if(temp>43.7)
+	else if(temp>maxtemp)
 	{
 		printf("Too Hot!\n");
 		if(flag<=0 || flag>=20)
