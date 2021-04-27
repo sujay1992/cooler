@@ -14,6 +14,7 @@ https://github.com/googlesamples/assistant-sdk-python
 **Change Log:**
 
 **2021-04-27**
+
 *README.md: Added description about the project
 
 *textinput.py: Added email notification when credential expires
@@ -31,4 +32,5 @@ Added as new Flask web app
 Takes temperature from web browser and saves to file.
 
 **2021-04-19**
+
 Initial Release
