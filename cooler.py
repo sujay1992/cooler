@@ -1,37 +1,75 @@
+from flask import Flask,render_template,request
 import os
-from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods = ['GET', 'POST'])
 def index():
-	fp = open("maxtemp.txt","r")
-	maxtemp = float(fp.read())
-	fp.close()
-	fp = open("mintemp.txt","r")
-	mintemp = float(fp.read())
-	fp.close()
+	if request.method == 'GET':
+		mintemp = '%2.1f' % gettemp('mintemp')
+		maxtemp = '%2.1f' % gettemp('maxtemp')
+		temp = '%2.1f' % getcurtemp()
+		return render_template("login.html", mintemp = mintemp, maxtemp = maxtemp, temp = temp)
+	else:
+		mintemp = request.form.get('mintemp')
+		if mintemp and mintemp.replace('.','',1).isdigit():
+			mintemp = '%2.1f' % float(mintemp)
+			settemp('mintemp', mintemp)
+		else:
+			mintemp = '%2.1f' % gettemp('mintemp')
+			
+		maxtemp = request.form.get('maxtemp')
+		if maxtemp and maxtemp.replace('.','',1).isdigit():
+			maxtemp = '%2.1f' % float(maxtemp)
+			settemp('maxtemp', maxtemp)
+		else:
+			maxtemp = '%2.1f' % gettemp('maxtemp')
+		
+		temp = request.form.get('temp')
+		if temp:
+			if temp == 'Min+':
+				mintemp = '%2.1f' % incmin()
+			elif temp == 'Min -':
+				mintemp = '%2.1f' % decmin()
+			elif temp == 'Max+':
+				maxtemp = '%2.1f' % incmax()
+			elif temp == 'Max -':
+				maxtemp = '%2.1f' % decmax()
+			elif temp == 'Turn On':
+				os.system("son")
+			elif temp == 'Turn Off':
+				os.system("soff")
+		temp = '%2.1f' % getcurtemp()
+		return render_template("login.html", mintemp = mintemp, maxtemp = maxtemp, temp = temp)
+	return 'test'
+
+def getcurtemp():
 	fp=os.popen('sudo vcgencmd measure_temp | cut -b 6,7,8,9')
-	temp=float(fp.read())
+	temp=fp.read()
+	if temp:
+		temp = float(temp)
+	else:
+		temp = 0.0
 	fp.close()
-	msg = 'Current Temperature: %2.1f<br/>Minimum Temperature: %2.1f\
-	<br/>Maximum Temperature: %2.1f<br/><br/>Use /max+ /max- /min+ \
-	/min- to adjust temperature.<br/><br/>Use /max/value /min/value \
-	to directly set values.<br/>[Note: Use only float \
-	values]' % (temp,mintemp,maxtemp)
-	return msg
+	return temp
+
+def gettemp(name):
+	if not os.path.isfile(name+'.txt'):
+		fp = open(name+'.txt','w')
+		fp.write('30.0\n')
+		fp.close()
+	fp = open(name+'.txt','r')
+	temp = fp.readline()
+	temp.replace('.','',1)
+	fp.close()
+	temp=float(temp)
+	return temp
+
+def settemp(name, temp):
+	fp = open(name+'.txt','w')
+	fp.write(temp)
+	fp.close()
 	
-@app.route('/min/<float:temp>')
-def setmin(temp):
-	os.system('echo %2.1f >mintemp.txt' % temp)
-	return 'Minimum temperature updated to %2.1f' % temp
-
-@app.route('/max/<float:temp>')
-def setmax(temp):
-	os.system('echo %2.1f >maxtemp.txt' % temp)
-	return 'Maximum temperature updated to %2.1f' % temp
-
-@app.route('/max+')
 def incmax():
 	fp = open("maxtemp.txt","r")
 	temp = float(fp.read()) + 0.2
@@ -39,9 +77,8 @@ def incmax():
 	fp = open("maxtemp.txt","w")
 	fp.write('%2.1f\n' % (temp))
 	fp.close()
-	return 'Maximum temperature increased to %2.1f' % temp
+	return temp
 
-@app.route('/max-')
 def decmax():
 	fp = open("maxtemp.txt","r")
 	temp = float(fp.read()) - 0.2
@@ -49,9 +86,8 @@ def decmax():
 	fp = open("maxtemp.txt","w")
 	fp.write('%2.1f\n' % (temp))
 	fp.close()
-	return 'Maximum temperature decreased to %2.1f' % temp
+	return temp
 
-@app.route('/min+')
 def incmin():
 	fp = open("mintemp.txt","r")
 	temp = float(fp.read()) + 0.2
@@ -59,9 +95,8 @@ def incmin():
 	fp = open("mintemp.txt","w")
 	fp.write('%2.1f\n' % (temp))
 	fp.close()
-	return 'Minimum temperature increased to %2.1f' % temp
+	return temp
 
-@app.route('/min-')
 def decmin():
 	fp = open("mintemp.txt","r")
 	temp = float(fp.read()) - 0.2
@@ -69,4 +104,4 @@ def decmin():
 	fp = open("mintemp.txt","w")
 	fp.write('%2.1f\n' % (temp))
 	fp.close()
-	return 'Minimum temperature decreased to %2.1f' % temp
+	return temp

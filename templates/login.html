@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Control Panel</Title>
+</head>
+<body>
+
+<p>Current Temperature: <b>{{ temp }}</b><p>
+<p>Minimum Temperature: <b>{{ mintemp }}</b><p>
+<p>Maximum Temperature: <b>{{ maxtemp }}</b><p>
+
+<h3>Adjust Min or Max Temperature</h3>
+<form action="/" method="post">
+  <input type="submit" value="Min+" name="temp">
+  <input type="submit" value="Max+" name="temp">
+  <br/>
+  <input type="submit" value="Min -" name="temp">
+  <input type="submit" value="Max -" name="temp">
+</form>
+<br/>
+
+<h3>Set Min or Max Temperature directly</h3>
+<form action="/" method="post">
+  <label for="mintemp">Min Temp:</label>
+  <input type="text" id="mintemp" name="mintemp" size="1"><br/>
+  <label for="maxtemp">Max Temp:</label>
+  <input type="test" id="maxtemp" name="maxtemp" size="1"><br/>
+  <input type="submit" value="Submit">
+</form>
+
+<br/>
+<h3>Turn On or Off</h3>
+<form action="/" method="post">
+  <input type="submit" value="Turn On" name="temp">
+  <input type="submit" value="Turn Off" name="temp">
+</form>
+<br/>
+
+</body>
+</html>
