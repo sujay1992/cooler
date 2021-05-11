@@ -47,8 +47,12 @@ int main(int argc, char* argv[])
 	}
 	else*/ if(hr>=7)
 	{
-		if(hr<8)
+		fp=fopen("turnoff.txt","r");
+		if(hr<8 && !fp)
 		{
+			fclose(fp);
+			fp=fopen("turnoff.txt","w");
+			fclose(fp);
 			printf("Turning Off!\n");
 			fp=fopen("output.txt","a");
 			fprintf(fp,"Turning Off!\n");
@@ -56,7 +60,7 @@ int main(int argc, char* argv[])
 			system("soff >>output.txt");
 			system("date >>output.txt");
 			flag=0;
-			system("sudo poweroff");
+			system("poweroff &");
 			return 1;
 		}
 		else if(hr<=23)
@@ -69,19 +73,26 @@ int main(int argc, char* argv[])
 			system("sleep 300");
 			return 1;
 		}
+		fclose(fp);
 	}
+	system("rm turnoff.txt");
 	float temp;
-	fp=popen("sudo vcgencmd measure_temp | cut -b 6,7,8,9","r");
+	fp=popen("vcgencmd measure_temp | cut -b 6,7,8,9","r");
 	fscanf(fp,"%f",&temp);
 	fclose(fp);
+	fp=fopen("output.txt","a");
 	printf("%2.1f %d ",temp,flag);
-	system("date");
+	fprintf(fp,"%2.1f %d ",temp,flag);
+	fclose(fp);
+	system("date >>output.txt");
 	if(temp<mintemp)
 	{
 		printf("Too Cool!\n");
+		system("echo 'Too Cool!' >>output.txt");
 		if(flag>=0 || flag<=-20)
 		{
 			system("soff");
+			system("echo 'soff' >>output.txt");
 			flag=0;
 		}
 		system("sleep 60");
@@ -90,9 +101,11 @@ int main(int argc, char* argv[])
 	else if(temp>maxtemp)
 	{
 		printf("Too Hot!\n");
+		system("echo 'Too Hot!' >>output.txt");
 		if(flag<=0 || flag>=20)
 		{
 			system("son");
+			system("echo 'son' >>output.txt");
 			flag=0;
 		}
 		system("sleep 60");
@@ -101,6 +114,7 @@ int main(int argc, char* argv[])
 	else
 	{
 		printf("Temperature under control!\n");
+		system("echo 'Temperature under control!' >>output.txt");
 	}
 	}while(1);
 	return 0;

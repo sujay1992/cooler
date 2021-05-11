@@ -36,15 +36,15 @@ def index():
 			elif temp == 'Max -':
 				maxtemp = '%2.1f' % decmax()
 			elif temp == 'Turn On':
-				os.system("son")
+				os.system("son &")
 			elif temp == 'Turn Off':
-				os.system("soff")
+				os.system("soff &")
 		temp = '%2.1f' % getcurtemp()
 		return render_template("login.html", mintemp = mintemp, maxtemp = maxtemp, temp = temp)
 	return 'test'
 
 def getcurtemp():
-	fp=os.popen('sudo vcgencmd measure_temp | cut -b 6,7,8,9')
+	fp=os.popen('vcgencmd measure_temp | cut -b 6,7,8,9')
 	temp=fp.read()
 	if temp:
 		temp = float(temp)
